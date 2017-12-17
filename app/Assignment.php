@@ -6,15 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Assignment extends Model
 {
+    protected $guarded = [];
+
+    protected $with = ['user'];
+
     // relation to task model
     public function task()
     {
-        $this->hasOne('App\Task');
+        return $this->belongsTo('App\Task');
     }
 
-    // relation to task model
+    // relation to user model
     public function user()
     {
-        $this->hasOne('App\User');
+        return $this->belongsTo('App\User');
     }
 }

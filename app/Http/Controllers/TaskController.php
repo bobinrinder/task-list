@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Task;
 use Illuminate\Http\Request;
 use Validator;
+use Illuminate\Validation\Rule;
 
 class TaskController extends Controller
 {
@@ -43,12 +44,20 @@ class TaskController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'text' => 'required|string',
+            'due_date' => 'nullable|date',
+            'assignees' => 'nullable|array',
+            'followers' => 'nullable|array',
+            'priority' => [
+                'required',
+                Rule::in(['high', 'normal', 'low']),
+            ],
         ]);
 
         // get params
         $fields = $request->only([
             'title',
             'text',
+            'priority',
         ]);
 
         // add user id
@@ -57,8 +66,31 @@ class TaskController extends Controller
         // create task
         $task = Task::create($fields);
 
+        // add followers
+        $followers = $request->get('followers');
+        if ($task && $followers) {
+            echo count($followers);
+            foreach ($followers as $follower) {
+                \App\Follow::create(array(
+                    'user_id' => (int)$follower,
+                    'task_id' => $task->id
+                ));
+            }
+        }
+
+        // add assignees
+        $assignees = $request->get('assignees');
+        if ($task && $assignees) {
+            foreach ($assignees as $assignee) {
+                \App\Assignment::create(array(
+                    'user_id' => (int)$assignee,
+                    'task_id' => $task->id
+                ));
+            }
+        }
+
         // return
-        return redirect('home/dashboard');
+        return redirect('home');
     }
 
     /**
@@ -69,7 +101,9 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        //
+        $users = \App\User::get();
+
+        return view('task.show', compact('users', 'task'));
     }
 
     /**

@@ -6,9 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Follow extends Model
 {
+    protected $guarded = [];
+
     // relation to task model
     public function task()
     {
-        $this->hasOne('App\Task');
+        return $this->belongsTo('App\Task');
+    }
+
+    // relation to user model
+    public function user()
+    {
+        return $this->belongsTo('App\User');
     }
 }
