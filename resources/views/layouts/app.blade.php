@@ -17,6 +17,7 @@
     <link rel="stylesheet"
           href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
     <link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/at.js/1.5.4/css/jquery.atwho.min.css" rel="stylesheet">
 
     <!-- JS -->
     <script src="{{ asset('js/app.js') }}"></script>
@@ -29,6 +30,8 @@
     <script src="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery.caret@0.3.1/dist/jquery.caret.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/at.js/1.5.4/js/jquery.atwho.min.js"></script>
 
 </head>
 <body>

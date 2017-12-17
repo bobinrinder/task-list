@@ -75,6 +75,17 @@
             $('#due_date').datetimepicker({
                 sideBySide: true
                 });
+
+            $('#text').atwho({
+                at: "@",
+                data:[ '<?php echo implode("','", $users->pluck('name')->toArray()); ?>' ]
+            });
+
+            $('#text').on("inserted.atwho", function(event, $li, query) {
+                console.log(event, query);
+                console.log( $li);
+            });
         });
+
     </script>
 @endsection

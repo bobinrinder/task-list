@@ -25,6 +25,23 @@
                         </p>
                     </div>
 
+                    <div class="panel-heading">
+                        <h4>
+                            Comments
+                        </h4>
+                        @foreach ($task->comments as $comment)
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <strong class="panel-title">{{ $comment->user->name }} </strong>
+                                    <em>commented at {{ $comment->created_at }}</em>
+                                </div>
+                                <div class="panel-body">
+                                    {{ $comment->text }}
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
                     <div class="panel-body">
                         @if (count($errors) > 0)
                             <div class="alert alert-danger">
@@ -39,7 +56,7 @@
                         <form method="post" action="/comment">
                             {{ csrf_field() }}
                             <div class="form-group">
-                                <label for="text">Comment</label>
+                                <label for="text">Leave a comment</label>
                                 <textarea class="form-control" id="text" rows="3" name="text" required></textarea>
                             </div>
                             <div class="form-group hidden">
@@ -58,6 +75,7 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <input type="hidden" value="{{ $task->id }}" name="task_id">
                             <button type="submit" class="btn btn-primary">Comment</button>
                         </form>
                     </div>

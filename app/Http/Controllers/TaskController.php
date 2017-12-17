@@ -69,7 +69,6 @@ class TaskController extends Controller
         // add followers
         $followers = $request->get('followers');
         if ($task && $followers) {
-            echo count($followers);
             foreach ($followers as $follower) {
                 \App\Follow::create(array(
                     'user_id' => (int)$follower,

@@ -35,7 +35,50 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // validate
+        $validatedData = $request->validate([
+            'text' => 'required|string',
+            'task_id' => 'exists:tasks,id',
+            'assignees' => 'nullable|array',
+            'followers' => 'nullable|array',
+        ]);
+
+        // get params
+        $fields = $request->only([
+            'text',
+            'task_id',
+        ]);
+
+        // add user id
+        $fields['user_id'] = \Auth::user()->id;
+
+        // create task
+        $comment = Comment::create($fields);
+
+        // add followers
+        $followers = $request->get('followers');
+        if ($comment && $followers) {
+            foreach ($followers as $follower) {
+                \App\Follow::create(array(
+                    'user_id' => (int)$follower,
+                    'task_id' => $comment->id
+                ));
+            }
+        }
+
+        // add assignees
+        $assignees = $request->get('assignees');
+        if ($comment && $assignees) {
+            foreach ($assignees as $assignee) {
+                \App\Assignment::create(array(
+                    'user_id' => (int)$assignee,
+                    'task_id' => $comment->id
+                ));
+            }
+        }
+
+        // return
+        return back();
     }
 
     /**
