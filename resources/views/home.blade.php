@@ -40,7 +40,7 @@
                                     <td><a href="/task/{{ $task->id }}"
                                            style="{{ $task->end_date ?  'text-decoration: line-through;' : ''}}">
                                             {{ $task->title }}
-                                        d</a>
+                                        </a>
                                     </td>
                                     <td>{{ $task->user->name }}</td>
                                     <td>

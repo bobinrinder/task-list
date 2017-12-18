@@ -91,7 +91,7 @@ class CommentController extends Controller
     {
         // get user
         $user = \App\User::where('email', '=', $request->get('sender'))->first();
-        $text = $request->get('body-plain');
+        $text = $request->get('stripped-text');
         $subject = $request->get('subject');
         $taskId = null;
         $comment = null;

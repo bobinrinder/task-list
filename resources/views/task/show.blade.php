@@ -54,7 +54,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <strong class="panel-title">{{ $comment->user->name }} </strong>
-                                    <em>commented at {{ $comment->created_at }}</em>
+                                    <em>commented at {{ $comment->created_at->format('m/d/Y H:i A') }}</em>
                                 </div>
                                 <div class="panel-body">
                                     {{ $comment->text }}

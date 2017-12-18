@@ -155,47 +155,83 @@ class TaskController extends Controller
     {
         // validate
         $validatedData = $request->validate([
-            'title' => 'nullable|string|max:255',
-            'text' => 'nullable|string',
+            'title' => 'required|string|max:255',
+            'text' => 'required|string',
             'due_date' => 'nullable|date',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date',
             'assignees' => 'nullable|array',
             'followers' => 'nullable|array',
             'priority' => [
-                'nullable',
+                'required',
                 Rule::in(['high', 'normal', 'low']),
             ],
         ]);
 
-        // get params
-        $task->start_date = $request->get('start_date');
+        // set new values
+        $task->title = $request->get('title');
+        $task->text = $request->get('text');
+        $task->due_date = $request->get('due_date');
+        $task->priority = $request->get('priority');
+        $task->save();
 
-
-        // add followers
+        // get old and new followers
         $followers = $request->get('followers');
+        $oldFollowers = \App\Follow::where('task_id', '=', $task->id)->get()->pluck('user_id')->toArray();
+
+        // remove old followers
+        \App\Follow::where('task_id', '=', $task->id)->delete();
+
+        // update followers
         if ($task && $followers) {
+
             foreach ($followers as $follower) {
-                \App\Follow::create(array(
-                    'user_id' => (int)$follower,
-                    'task_id' => $task->id
-                ));
+
+                // check if follow already exists
+                if (!\App\Follow::where([['user_id', '=', (int)$follower], ['task_id', '=', $task->id]])->get()->count()) {
+
+                    // create follow
+                    $follow = \App\Follow::create(array(
+                        'user_id' => (int)$follower,
+                        'task_id' => $task->id
+                    ));
+
+                    // mail notification
+                    if (\Auth::user()->id !== (int)$follower && !in_array((int)$follower, $oldFollowers)) {
+                        Mail::to($follow->user)->send(new TaskFollow($task));
+                    }
+                }
             }
         }
 
-        // add assignees
+        // get old and new assignees
         $assignees = $request->get('assignees');
+        $oldAssignees = \App\Assignment::where('task_id', '=', $task->id)->get()->pluck('user_id')->toArray();
+
+        // remove old assignees
+        \App\Assignment::where('task_id', '=', $task->id)->delete();
+
+        // update assignees
         if ($task && $assignees) {
             foreach ($assignees as $assignee) {
-                \App\Assignment::create(array(
-                    'user_id' => (int)$assignee,
-                    'task_id' => $task->id
-                ));
+
+                // check if assignment already exists
+                if (!\App\Assignment::where([['user_id', '=', (int)$assignee], ['task_id', '=', $task->id]])->get()->count()) {
+
+                    // create assignment
+                    $assignment = \App\Assignment::create(array(
+                        'user_id' => (int)$assignee,
+                        'task_id' => $task->id
+                    ));
+
+                    // mail notification if it's a self-assign
+                    if (\Auth::user()->id !== (int)$assignee && !in_array((int)$assignee, $oldAssignees)) {
+                        Mail::to($assignment->user)->send(new TaskAssign($task));
+                    }
+                }
             }
         }
 
         // return
-        return redirect('home');
+        return redirect('task/' . $task->id);
     }
 
     /**
