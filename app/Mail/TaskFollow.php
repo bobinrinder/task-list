@@ -31,6 +31,7 @@ class TaskFollow extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.task-follow', array('task' => $this->task));
+        return $this->subject('Task-List task followed #' . $this->task->id)
+            ->view('emails.task-follow', array('task' => $this->task));
     }
 }

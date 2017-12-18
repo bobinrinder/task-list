@@ -31,6 +31,7 @@ class TaskAssign extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.task-assign', array('task' => $this->task));
+        return $this->subject('Task-List task assigned #' . $this->task->id)
+            ->view('emails.task-assign', array('task' => $this->task));
     }
 }

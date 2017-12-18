@@ -89,15 +89,29 @@ class CommentController extends Controller
      */
     public function storeFromEmail(Request $request)
     {
-        // add user id
-        $fields['text'] = var_dump($request->all());
-        $fields['user_id'] = 1;
+        // get user
+        $user = \App\User::where('email', '=', $request->get('sender'))->first();
+        $text = $request->get('body-plain');
+        $subject = $request->get('subject');
+        $taskId = null;
+        $comment = null;
 
-        // create task
-        $comment = Comment::create($fields);
+        // search for task number in subject
+        if (strpos($subject, '#') > -1) {
+            $taskId = substr($subject, strpos($subject, '#') + 1);
+        }
+
+        // create comment
+        if ($user && $text && $taskId) {
+            $fields['text'] = $text;
+            $fields['user_id'] = $user->id;
+            $fields['task_id'] = $taskId;
+
+            $comment = Comment::create($fields);
+        }
 
         // return
-        return $comment;
+        return $comment ? $comment->fresh() : 'Error';
     }
 
     /**
