@@ -90,7 +90,7 @@ class TaskController extends Controller
         }
 
         // return
-        return redirect('home');
+        return redirect('task/' . $task->id);
     }
 
     /**
@@ -114,7 +114,9 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        //
+        $users = \App\User::get();
+
+        return view('task.create', compact('users', 'task'));
     }
 
     /**
@@ -214,6 +216,8 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $task->delete();
+
+        return back();
     }
 }

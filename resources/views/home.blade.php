@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default">
                     <div class="panel-heading">Dashboard</div>
 
@@ -30,13 +30,18 @@
                                 <th>Done by</th>
                                 <th>Duration</th>
                                 <th>Priority</th>
+                                <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($tasks as $task)
                                 <tr>
                                     <td>{{ $task->id }}</td>
-                                    <td><a href="/task/{{ $task->id }}">{{ $task->title }}</a></td>
+                                    <td><a href="/task/{{ $task->id }}"
+                                           style="{{ $task->end_date ?  'text-decoration: line-through;' : ''}}">
+                                            {{ $task->title }}
+                                        d</a>
+                                    </td>
                                     <td>{{ $task->user->name }}</td>
                                     <td>
                                         @foreach ($task->assignments as $assignment)
@@ -73,6 +78,16 @@
                                         @else
                                             <span class="label label-success">Normal</span>
                                         @endif
+                                    </td>
+                                    <td>
+                                        <a href="/task/{{ $task->id }}/edit" class="btn btn-default btn-sm">
+                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                        </a>
+                                        <form method="post" action="/task/{{ $task->id }}" style="display: inline">
+                                            {{ csrf_field() }}
+                                            {{ method_field('DELETE') }}
+                                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
