@@ -199,6 +199,7 @@ class TaskController extends Controller
     {
         // set start date
         $task->end_date = \Carbon\Carbon::now();
+        $task->completed_user_id = \Auth::user()->id;
         $task->save();
 
         // return

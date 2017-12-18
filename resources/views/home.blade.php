@@ -57,8 +57,14 @@
                                     <td>
                                         {{ $task->due_date ? $task->due_date->format('m/d/Y') : '' }}
                                     </td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>
+                                        {{ $task->completedUser ? $task->completedUser->name : '' }}
+                                    </td>
+                                    <td>
+                                        @if ($task->start_date && $task->end_date)
+                                            {{ $task->end_date->diffInMinutes($task->start_date) }} min
+                                        @endif
+                                    </td>
                                     <td>
                                         @if ($task->priority === 'high')
                                             <span class="label label-danger">High</span>

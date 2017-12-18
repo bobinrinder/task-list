@@ -8,7 +8,7 @@ class Task extends Model
 {
     protected $guarded = [];
 
-    protected $with = ['user', 'followers', 'assignments'];
+    protected $with = ['user', 'completedUser', 'followers', 'assignments'];
 
     protected $dates = [
         'created_at',
@@ -45,5 +45,11 @@ class Task extends Model
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+
+    // relation to user model
+    public function completedUser()
+    {
+        return $this->belongsTo('App\User','completed_user_id', 'id');
     }
 }
