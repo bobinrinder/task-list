@@ -23,3 +23,4 @@ Route::resource('/task', 'TaskController');
 Route::patch('/task/{task}/start', 'TaskController@start');
 Route::patch('/task/{task}/end', 'TaskController@end');
 Route::resource('/comment', 'CommentController');
+Route::post('/comment/mail', 'CommentController@storeFromEmail');

@@ -28,6 +28,25 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4>
+                                    Followers
+                                </h4>
+                                <p>{{ implode(', ', $task->followers->pluck('user.name')->toArray()) }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h4>
+                                    Assignees
+                                </h4>
+                                <p>{{ implode(', ', $task->assignments->pluck('user.name')->toArray()) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
                         <h4>
                             Comments
                         </h4>

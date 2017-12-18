@@ -74,15 +74,20 @@ class TaskController extends Controller
         $followers = $request->get('followers');
         if ($task && $followers) {
             foreach ($followers as $follower) {
-                $follow = \App\Follow::create(array(
-                    'user_id' => (int)$follower,
-                    'task_id' => $task->id
-                ));
 
-                // mail notification
-                if (\Auth::user()->id !== (int)$follower) {
-                    $task = $task->fresh();
-                    Mail::to($follow->user)->send(new TaskFollow($task));
+                // check if follow already exists
+                if (!\App\Follow::where([['user_id', '=', (int)$follower], ['task_id', '=', $task->id]])->get()->count()) {
+
+                    // create follow
+                    $follow = \App\Follow::create(array(
+                        'user_id' => (int)$follower,
+                        'task_id' => $task->id
+                    ));
+
+                    // mail notification
+                    if (\Auth::user()->id !== (int)$follower) {
+                        Mail::to($follow->user)->send(new TaskFollow($task));
+                    }
                 }
             }
         }
@@ -91,15 +96,20 @@ class TaskController extends Controller
         $assignees = $request->get('assignees');
         if ($task && $assignees) {
             foreach ($assignees as $assignee) {
-                $assignment = \App\Assignment::create(array(
-                    'user_id' => (int)$assignee,
-                    'task_id' => $task->id
-                ));
 
-                // mail notification
-                if (\Auth::user()->id !== (int)$assignee) {
-                    $task = $task->fresh();
-                    Mail::to($assignment->user)->send(new TaskAssign($task));
+                // check if assignment already exists
+                if (!\App\Assignment::where([['user_id', '=', (int)$assignee], ['task_id', '=', $task->id]])->get()->count()) {
+
+                    // create assignment
+                    $assignment = \App\Assignment::create(array(
+                        'user_id' => (int)$assignee,
+                        'task_id' => $task->id
+                    ));
+
+                    // mail notification if it's a self-assign
+                    if (\Auth::user()->id !== (int)$assignee) {
+                        Mail::to($assignment->user)->send(new TaskAssign($task));
+                    }
                 }
             }
         }

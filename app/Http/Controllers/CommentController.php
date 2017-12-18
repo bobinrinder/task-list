@@ -82,6 +82,25 @@ class CommentController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeFromEmail(Request $request)
+    {
+        // add user id
+        $fields['text'] = var_dump($request->all());
+        $fields['user_id'] = 1;
+
+        // create task
+        $comment = Comment::create($fields);
+
+        // return
+        return $comment;
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  \App\Comment  $comment
