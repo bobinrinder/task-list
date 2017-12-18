@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\TaskFollow;
 use App\Task;
 use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TaskAssign;
 
 class TaskController extends Controller
 {
@@ -71,10 +74,16 @@ class TaskController extends Controller
         $followers = $request->get('followers');
         if ($task && $followers) {
             foreach ($followers as $follower) {
-                \App\Follow::create(array(
+                $follow = \App\Follow::create(array(
                     'user_id' => (int)$follower,
                     'task_id' => $task->id
                 ));
+
+                // mail notification
+                if (\Auth::user()->id !== (int)$follower) {
+                    $task = $task->fresh();
+                    Mail::to($follow->user)->send(new TaskFollow($task));
+                }
             }
         }
 
@@ -82,10 +91,16 @@ class TaskController extends Controller
         $assignees = $request->get('assignees');
         if ($task && $assignees) {
             foreach ($assignees as $assignee) {
-                \App\Assignment::create(array(
+                $assignment = \App\Assignment::create(array(
                     'user_id' => (int)$assignee,
                     'task_id' => $task->id
                 ));
+
+                // mail notification
+                if (\Auth::user()->id !== (int)$assignee) {
+                    $task = $task->fresh();
+                    Mail::to($assignment->user)->send(new TaskAssign($task));
+                }
             }
         }
 
