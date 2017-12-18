@@ -17,6 +17,25 @@
                             @else
                                 <span class="label label-success">Normal</span>
                             @endif</em>
+                        <br>
+                        @if (!$task->start_date)
+                            <form method="post" action="/task/{{ $task->id }}/start">
+                                {{ csrf_field() }}
+                                {{ method_field('PATCH') }}
+                                <button type="submit" class="btn btn-success">Start Task</button>
+                            </form>
+                        @else
+                            <strong>Task was started at {{ $task->start_date->format('m/d/Y H:i A') }}</strong>
+                        @endif
+                        @if (!$task->end_date && $task->start_date)
+                            <form method="post" action="/task/{{ $task->id }}/end">
+                                {{ csrf_field() }}
+                                {{ method_field('PATCH') }}
+                                <button type="submit" class="btn btn-danger">Finish Task</button>
+                            </form>
+                        @elseif ($task->end_date && $task->start_date)
+                            | <strong>Task was finished at {{ $task->end_date->format('m/d/Y H:i A') }}</strong>
+                        @endif
                     </div>
 
                     <div class="panel-heading">

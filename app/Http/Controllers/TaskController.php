@@ -57,6 +57,7 @@ class TaskController extends Controller
         $fields = $request->only([
             'title',
             'text',
+            'due_date',
             'priority',
         ]);
 
@@ -125,7 +126,83 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        //
+        // validate
+        $validatedData = $request->validate([
+            'title' => 'nullable|string|max:255',
+            'text' => 'nullable|string',
+            'due_date' => 'nullable|date',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+            'assignees' => 'nullable|array',
+            'followers' => 'nullable|array',
+            'priority' => [
+                'nullable',
+                Rule::in(['high', 'normal', 'low']),
+            ],
+        ]);
+
+        // get params
+        $task->start_date = $request->get('start_date');
+
+
+        // add followers
+        $followers = $request->get('followers');
+        if ($task && $followers) {
+            foreach ($followers as $follower) {
+                \App\Follow::create(array(
+                    'user_id' => (int)$follower,
+                    'task_id' => $task->id
+                ));
+            }
+        }
+
+        // add assignees
+        $assignees = $request->get('assignees');
+        if ($task && $assignees) {
+            foreach ($assignees as $assignee) {
+                \App\Assignment::create(array(
+                    'user_id' => (int)$assignee,
+                    'task_id' => $task->id
+                ));
+            }
+        }
+
+        // return
+        return redirect('home');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Task  $task
+     * @return \Illuminate\Http\Response
+     */
+    public function start(Request $request, Task $task)
+    {
+        // set start date
+        $task->start_date = \Carbon\Carbon::now();
+        $task->save();
+
+        // return
+        return back();
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Task  $task
+     * @return \Illuminate\Http\Response
+     */
+    public function end(Request $request, Task $task)
+    {
+        // set start date
+        $task->end_date = \Carbon\Carbon::now();
+        $task->save();
+
+        // return
+        return back();
     }
 
     /**

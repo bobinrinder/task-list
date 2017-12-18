@@ -24,11 +24,11 @@
                                 <th>Created by</th>
                                 <th>Assigned to</th>
                                 <th>Followed by</th>
-                                <th>Due Date</th>
                                 <th>Start date</th>
                                 <th>End Date</th>
-                                <th>Completed by</th>
-                                <th>Completed in</th>
+                                <th>Due Date</th>
+                                <th>Done by</th>
+                                <th>Duration</th>
                                 <th>Priority</th>
                             </tr>
                             </thead>
@@ -48,9 +48,15 @@
                                             {{ $follower->user->name }},
                                         @endforeach
                                     </td>
-                                    <td>2011/04/25</td>
-                                    <td>2011/04/25</td>
-                                    <td>2011/04/25</td>
+                                    <td>
+                                        {{ $task->start_date ? $task->start_date->format('m/d/Y') : '' }}
+                                    </td>
+                                    <td>
+                                        {{ $task->end_date ? $task->end_date->format('m/d/Y') : '' }}
+                                    </td>
+                                    <td>
+                                        {{ $task->due_date ? $task->due_date->format('m/d/Y') : '' }}
+                                    </td>
                                     <td></td>
                                     <td></td>
                                     <td>
